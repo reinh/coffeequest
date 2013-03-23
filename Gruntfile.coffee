@@ -7,14 +7,12 @@ module.exports = (grunt) ->
     watch:
       coffee:
         files: ['src/coffee/*']
-        tasks: 'coffeeredux'
+        tasks: 'coffee'
       stylus:
         files: ['src/stylus/*']
         tasks: 'stylus'
 
-    coffeeredux:
-      options:
-          sourceMap: true
+    coffee:
       compile:
         files: [
           expand: true
