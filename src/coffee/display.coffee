@@ -18,7 +18,7 @@ class Display
 
     _setupEvents: ->
         Backbone.on 'render', => @render()
-        Backbone.on 'set', (x, y, char) => @set(x, y, char)
+        Backbone.on 'set', (point, char) => @set(point, char)
 
     render: ->
         return unless @dirty?
@@ -27,9 +27,7 @@ class Display
         return true
 
     toString: -> ((cell or " " for cell in row).join("") for row in @content).join("\n")
-
-    set: (x,y, val) ->
-        @content[y][x] = val
+    set: (p, val) -> @content[p.y][p.x] = val
 
     makeElement: ->
         el = $('<textarea></textarea>')

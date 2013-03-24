@@ -13,12 +13,15 @@ class @Engine
 
         Backbone.on 'move', (args...) => @move args...
 
-        @player    = @world.player
+        @player    = new Player(0,0)
         @display   = new Display(rows: height, columns: width)
         actors     = [@player, new Random(10,10, @)]
         @scheduler = new Scheduler(actors)
 
-        actor.draw() for actor in actors
+        @world.paint @display
+
+        for actor in actors
+            @display.set actor, actor.char
 
     run: =>
         @display.render()
@@ -26,10 +29,12 @@ class @Engine
 
     move: (actor, dx, dy) =>
         [x,y] = [actor.x+dx, actor.y+dy]
+        oldPoint = {x: actor.x, y: actor.y}
+        newPoint = {x:x, y:y}
 
         unless @world.isBlocked x, y
-            @display.set x, y, actor.char
-            @world.redraw actor.x, actor.y
+            @display.set oldPoint, @world.charAt actor
+            @display.set newPoint, actor.char
             actor.x = x
             actor.y = y
 

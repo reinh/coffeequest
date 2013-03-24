@@ -4,7 +4,7 @@ class @Actor
     damage: 3
     hp: 10
     dead: false
-    draw: -> Backbone.trigger 'set', @x, @y, @char
+    draw: -> Backbone.trigger 'set', {x:@x, y:@y}, @char
     attack: (actor) ->
         actor.hit @damage
         console.log "Attacking", actor.char, "for", @damage, "damage"

@@ -12,5 +12,5 @@ class @Turn
     run: => @actor.act @
     retry: => new Turn(@engine, @actor).run()
     finish: =>
-        @actor.draw()
+        @engine.display.set @actor, @actor.char
         @engine.run()

@@ -9,6 +9,6 @@ class Map
     isBlocked: (x, y) ->
         [x, y] not of @
 
-    redraw: (x, y) -> Backbone.trigger 'set', x, y, @[[x, y]]
+    charAt: (point) -> @[[point.x, point.y]] or '.'
 
 @Map = Map
