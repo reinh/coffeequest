@@ -18,7 +18,7 @@ class @Random extends Actor
         super
         dir = [_.random(-1, 1), _.random(-1, 1)]
         Backbone.trigger 'move', @, dir...
-        turn.resolve()
+        turn.end()
 
 class @Player extends Actor
     char: '@'
@@ -35,6 +35,6 @@ class @Player extends Actor
 
             if dir?
                 Backbone.trigger 'move', @, dir...
-                turn.resolve()
+                turn.end()
             else
-                turn.reject()
+                turn.redo()

@@ -7,33 +7,22 @@ class @Scheduler
         @index = 0 if @index >= @items.length
         return item
 
-class Engine
+class @Engine
     constructor: (@world, @context) ->
         {height: height, width: width} = @world.dimensions
-        @player = @world.player
 
-        @display = new Display(rows: height, columns: width)
         Backbone.on 'move', (args...) => @move args...
 
-        actors = [@player, new Random(10,10, @)]
+        @player    = @world.player
+        @display   = new Display(rows: height, columns: width)
+        actors     = [@player, new Random(10,10, @)]
         @scheduler = new Scheduler(actors)
 
         actor.draw() for actor in actors
-        @display.render()
-        $.when(@display.el.focus).then @run
 
     run: =>
         @display.render()
-        actor = @scheduler.next()
-        act = =>
-            turn = $.Deferred()
-            turn.context = $(window)
-            turn.always -> actor.draw()
-            turn.done @run
-            turn.fail act
-
-            actor.act turn
-        act()
+        new Turn(@, @scheduler.next()).run()
 
     move: (actor, dx, dy) =>
         [x,y] = [actor.x+dx, actor.y+dy]
@@ -44,4 +33,3 @@ class Engine
             actor.x = x
             actor.y = y
 
-@Engine = Engine
