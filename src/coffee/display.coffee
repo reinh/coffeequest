@@ -1,51 +1,51 @@
-class Display
-    defaults:
-        rows: 20
-        columns: 80
-        font: '"Source Code Pro", "Andale Mono", monospace'
-        fontsize: '24px'
-        background: '#000'
-        foreground: '#CCC'
-        padding: '5px'
+CELL =
+    WIDTH: 16
+    HEIGHT: 27
+    CHAR: (p) -> p.char
+    X: (p) -> p.x * CELL.WIDTH
+    Y: (p) -> p.y * CELL.HEIGHT
+    DY: -> 0.8*CELL.HEIGHT
 
-    constructor: (@options={}) ->
-        @options = _.defaults @options, @defaults
-        @dirty = true
-        @content = (Array(@options.columns) for row in [1..@options.rows])
-        @el = @makeElement()
-        @el.appendTo 'body'
-        @_setupEvents()
+class @Display
+    constructor: (@engine) ->
+        @mapDisplay = new MapDisplay(@engine.world.map)
+        @actorDisplay = new ActorDisplay(@engine.actors)
 
-    _setupEvents: ->
-        Backbone.on 'render', => @render()
-        Backbone.on 'set', (point, char) => @set(point, char)
+    update: ->
+        @actorDisplay.update()
 
-    render: ->
-        return unless @dirty?
-        @el.val @toString()
-        @dirty = false
-        return true
+class @MapDisplay
+    constructor: (@map) ->
+        @update()
 
-    toString: -> ((cell or " " for cell in row).join("") for row in @content).join("\n")
-    set: (p, val) -> @content[p.y][p.x] = val
+    update: ->
+        d3.select("body svg").selectAll("rect.map")
+            .data(@map.points())
+            .enter()
+                .append("rect")
+                .attr("width",  CELL.WIDTH)
+                .attr("height", CELL.HEIGHT)
+                .attr("x", CELL.X)
+                .attr("y", CELL.Y)
+                .classed("map", true)
+                .classed("wall",  (p) => @map.isWall?(p) )
+                .classed("floor", (p) => not @map.isWall?(p) )
 
-    makeElement: ->
-        el = $('<textarea></textarea>')
+class @ActorDisplay
+    constructor: (@actors) ->
 
-        el.attr
-            rows: @options.rows
-            cols: @options.columns
-            disabled: true
+    update: ->
+        d3_actors = d3.select("body svg").selectAll("text.actor").data(@actors)
 
-        el.css
-            'font-family' : @options.font
-            'font-size'   : @options.fontsize
-            color         : @options.foreground
-            background    : @options.background
-            padding       : @options.padding
-            border        : 0
+        d3_actors.enter()
+            .append("text")
+            .text(CELL.CHAR)
+            .attr("x", CELL.X)
+            .attr("y", CELL.Y)
+            .attr("dy", CELL.DY)
+            .classed("actor", true)
 
-        return el
-
-
-@Display = Display
+        d3_actors.transition()
+            .duration(150)
+            .attr("x", CELL.X)
+            .attr("y", CELL.Y)

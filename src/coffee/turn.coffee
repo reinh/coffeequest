@@ -2,7 +2,6 @@ class @Turn
     constructor: (@engine, @actor) ->
         @context = $(window)
         @promise = $.Deferred()
-
         @promise.fail @retry
         @promise.done @finish
 
@@ -11,6 +10,4 @@ class @Turn
 
     run: => @actor.act @
     retry: => new Turn(@engine, @actor).run()
-    finish: =>
-        @engine.display.set @actor, @actor.char
-        @engine.run()
+    finish: => @engine.run()

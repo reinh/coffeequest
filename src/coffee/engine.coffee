@@ -14,27 +14,15 @@ class @Engine
         Backbone.on 'move', (args...) => @move args...
 
         @player    = new Player(0,0)
-        @display   = new Display(rows: height, columns: width)
-        actors     = [@player, new Random(10,10, @)]
-        @scheduler = new Scheduler(actors)
-
-        @world.paint @display
-
-        for actor in actors
-            @display.set actor, actor.char
+        @actors    = [@player, new Random(10,10, @)]
+        @display   = new Display(@)
+        @scheduler = new Scheduler(@actors)
 
     run: =>
-        @display.render()
+        @display.update()
         new Turn(@, @scheduler.next()).run()
 
     move: (actor, dx, dy) =>
-        [x,y] = [actor.x+dx, actor.y+dy]
-        oldPoint = {x: actor.x, y: actor.y}
-        newPoint = {x:x, y:y}
-
-        unless @world.isBlocked newPoint
-            @display.set oldPoint, @world.charAt actor
-            @display.set newPoint, actor.char
-            actor.x = x
-            actor.y = y
+        newPoint = {x: actor.x+dx, y: actor.y+dy}
+        _.extend(actor, newPoint) unless @world.isBlocked newPoint
 

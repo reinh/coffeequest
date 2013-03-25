@@ -20,4 +20,4 @@ class @Map
     points      : -> @toPoint key for key in Object.keys @cells
     toPoint     : (key) ->
         [x,y] = key.split(",")
-        {x: parseInt x, y: parseInt y}
+        {x: parseInt(x), y: parseInt(y)}
