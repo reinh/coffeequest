@@ -28,10 +28,14 @@ class @Player extends Actor
     act: (turn) ->
         turn.context.one 'keyup', (e) =>
             dir = switch e.which
+                when Keys.Y then [-1, -1]
+                when Keys.U then [ 1, -1]
                 when Keys.H then [-1,  0]
                 when Keys.J then [ 0,  1]
                 when Keys.K then [ 0, -1]
                 when Keys.L then [ 1,  0]
+                when Keys.B then [-1,  1]
+                when Keys.N then [ 1,  1]
                 else null
 
             if dir?
