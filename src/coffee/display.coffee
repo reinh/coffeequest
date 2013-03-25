@@ -72,6 +72,7 @@ class @MessagesDisplay
 
         idx = (m) -> last_messages.indexOf m
         y   = (m) -> top + idx(m) * height
+        weight = (m) -> if m.important? then 'bold' else 'regular'
 
         d3_messages = d3.select("svg#messages").selectAll("text")
             .data(last_messages, (m) -> m.id )
@@ -81,6 +82,7 @@ class @MessagesDisplay
             .attr("x", 0)
             .attr("y", (m) -> y(m) + height)
             .text( (m) -> m.text )
+            .style('font-weight', weight)
             .style('fill-opacity', 0)
             .transition()
                 .duration(10)

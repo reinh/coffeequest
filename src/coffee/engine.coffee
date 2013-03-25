@@ -17,8 +17,10 @@ class @Engine
         @scheduler = new Scheduler(@actors)
 
         Backbone.on 'move', (args...) => @move args...
-        Backbone.on 'message', (message) =>
-            message = { text: message, id: _.uniqueId 'message' }
+        Backbone.on 'message', (message, important) =>
+            message = { text: message } if typeof message is "string"
+            message.id = _.uniqueId 'message'
+            message.important ?= important
             @messages.push message
             @messages = _.last @messages, 100
 
@@ -38,16 +40,17 @@ class @Engine
                 what = "attack#{if actor is @player then '' else 's'}"
                 whom = target.name
 
-                message = ""
+                message = { text: "" }
 
                 actor.attack target
                 if target.isAlive()
-                    message += "#{who} #{what} #{whom}."
+                    message.text += "#{who} #{what} #{whom}."
                     if target.isHurt()
-                        message += " It is badly injured!"
+                        message.text += " It is badly injured!"
                 else
                     @actors = _.difference @actors , [target]
-                    message += "#{who} kill #{whom}!"
+                    message.text += "#{who} kill #{whom}!"
+                    message.important = true
                 Backbone.trigger 'message', message
             when @world.isBlocked newPoint
                 Backbone.trigger 'message', 'You are blocked!' if actor is @player
