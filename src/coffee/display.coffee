@@ -64,16 +64,22 @@ class @ActorDisplay
 
 class @MessagesDisplay
     update: (messages) ->
-        duration = 100
-        y = (m) -> 15 + last_messages.indexOf(m) * 20
         last_messages = _.last messages, 5
+
+        duration = 100
+        top      = 15
+        height   = 20
+
+        idx = (m) -> last_messages.indexOf m
+        y   = (m) -> top + idx(m) * height
+
         d3_messages = d3.select("svg#messages").selectAll("text")
             .data(last_messages, (m) -> m.id )
 
         d3_messages.enter()
             .append("text")
             .attr("x", 0)
-            .attr("y", (m) -> y(m) + 20)
+            .attr("y", (m) -> y(m) + height)
             .text( (m) -> m.text )
             .style('fill-opacity', 0)
             .transition()
@@ -88,5 +94,5 @@ class @MessagesDisplay
         d3_messages.exit().transition()
             .duration(duration)
             .style('fill-opacity', 0)
-            .attr("y", -5)
+            .attr("y", top - height)
             .remove()
