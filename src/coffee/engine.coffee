@@ -18,10 +18,9 @@ class @Engine
 
         Backbone.on 'move', (args...) => @move args...
         Backbone.on 'message', (message) =>
-            message = { text: message, id: (new Date().getTime()) }
+            message = { text: message, id: _.uniqueId 'message' }
             @messages.push message
             @messages = _.last @messages, 100
-            @display.messagesDisplay.update(@messages)
 
         @display = new Display(@)
 
@@ -39,12 +38,17 @@ class @Engine
                 what = "attack#{if actor is @player then '' else 's'}"
                 whom = target.name
 
+                message = ""
+
                 actor.attack target
-                if target.dead
-                    @actors = _.difference @actors , [target]
-                    Backbone.trigger 'message', "#{who} kill #{whom}!"
+                if target.isAlive()
+                    message += "#{who} #{what} #{whom}."
+                    if target.isHurt()
+                        message += " It is badly injured!"
                 else
-                    Backbone.trigger 'message', "#{who} #{what} #{whom}."
+                    @actors = _.difference @actors , [target]
+                    message += "#{who} kill #{whom}!"
+                Backbone.trigger 'message', message
             when @world.isBlocked newPoint
                 Backbone.trigger 'message', 'You are blocked!' if actor is @player
             else

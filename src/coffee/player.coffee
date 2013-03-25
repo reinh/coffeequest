@@ -1,9 +1,8 @@
 class @Actor
-    constructor: (@x, @y) ->
+    constructor: (@x, @y) -> @hp = @maxHp = 10
     name: 'the beastie'
     char: '*'
     damage: 3
-    hp: 10
     dead: false
     at: (p) ->
         return false if @dead
@@ -11,6 +10,8 @@ class @Actor
 
     attack: (actor) -> actor.hit @damage
     hit: (damage) -> @dead = (@hp -= damage) <= 0
+    isAlive: -> not @dead
+    isHurt: -> @hp/@maxHp < 1/3
     act: (turn) -> turn.end()
 
 class @Random extends Actor
