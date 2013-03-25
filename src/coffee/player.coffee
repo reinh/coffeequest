@@ -1,30 +1,30 @@
 class @Actor
-    constructor: (@x, @y, @engine) ->
+    constructor: (@x, @y) ->
+    name: 'the beastie'
     char: '*'
     damage: 3
     hp: 10
     dead: false
-    draw: -> Backbone.trigger 'set', {x:@x, y:@y}, @char
-    attack: (actor) ->
-        actor.hit @damage
-        console.log "Attacking", actor.char, "for", @damage, "damage"
-        console.log actor.char, "is dead!" if actor.dead
+    at: (p) ->
+        return false if @dead
+        p.x is @x and p.y is @y
+
+    attack: (actor) -> actor.hit @damage
     hit: (damage) -> @dead = (@hp -= damage) <= 0
-    act: -> console.log @.char, "acting"
+    act: (turn) -> turn.end()
 
 class @Random extends Actor
     char: '%'
     act: (turn) ->
-        super
         dir = [_.random(-1, 1), _.random(-1, 1)]
         Backbone.trigger 'move', @, dir...
         turn.end()
 
 class @Player extends Actor
     char: '@'
+    name: 'the Hero'
 
     act: (turn) ->
-        super
         turn.context.one 'keyup', (e) =>
             dir = switch e.which
                 when Keys.H then [-1,  0]
