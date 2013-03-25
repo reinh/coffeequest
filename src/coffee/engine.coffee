@@ -32,7 +32,7 @@ class @Engine
         oldPoint = {x: actor.x, y: actor.y}
         newPoint = {x:x, y:y}
 
-        unless @world.isBlocked x, y
+        unless @world.isBlocked newPoint
             @display.set oldPoint, @world.charAt actor
             @display.set newPoint, actor.char
             actor.x = x
