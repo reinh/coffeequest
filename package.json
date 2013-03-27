@@ -6,7 +6,7 @@
     "grunt": "~0.4.0",
     "grunt-contrib-watch": "0.3.x",
     "grunt-contrib-jshint": "~0.1.1",
-    "grunt-contrib-coffee": "~0.6.0",
+    "grunt-contrib-coffee": "latest",
     "grunt-coffeelint": "0.0.x",
     "grunt-contrib-stylus": "~0.4.1",
     "grunt-coffee-redux": "~0.2.3"

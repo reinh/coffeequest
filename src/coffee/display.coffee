@@ -10,12 +10,16 @@ CELL =
 class @Display
     constructor: (@engine) ->
         @mapDisplay      = new MapDisplay(@engine.world.map)
-        @actorDisplay    = new ActorDisplay(@engine.actors)
+        @actorDisplay    = new ActorDisplay([@engine.player])
         @messagesDisplay = new MessagesDisplay()
+        @distanceDisplay = new CharGridDisplay()
 
     update: (@engine) ->
         @actorDisplay.update(@engine.actors)
-        @messagesDisplay.update(@engine.messages)
+        _.defer =>
+            distanceMap = new DijkstraMap @engine.world.map, [@engine.player]
+            @distanceDisplay.update distanceMap
+        _.defer => @messagesDisplay.update(@engine.messages)
 
 class @MapDisplay
     constructor: (@map) ->
@@ -33,6 +37,37 @@ class @MapDisplay
                 .classed("map", true)
                 .classed("wall",  (p) => @map.isWall?(p) )
                 .classed("floor", (p) => not @map.isWall?(p) )
+
+class @CharGridDisplay
+    constructor: (@grid) -> @update(@grid)
+
+    remove: -> d3.select("svg#map").selectAll("text.char").remove()
+
+    update: (grid) ->
+        @grid = grid
+        return unless @grid?
+        cells = for point in grid.points()
+            { x: point.x, y: point.y, char: @grid.get point }
+
+        d3_chars = d3.select("svg#map").selectAll("text.char")
+            .data(cells, (g) => @grid.toKey(g))
+
+        fontSize = 10
+
+        d3_chars.enter().append("text")
+            .attr("x", CELL.X)
+            .attr("y", CELL.Y)
+            .attr("dx", CELL.WIDTH/2)
+            .attr("dy", CELL.HEIGHT-fontSize)
+            .style("fill", "#ddd")
+            .style("font-size", fontSize)
+            .attr('text-anchor', 'middle')
+            .classed("char", true)
+
+        d3_chars
+            .text(CELL.CHAR)
+
+        d3_chars.exit().remove()
 
 class @ActorDisplay
     constructor: (@actors) ->

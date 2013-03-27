@@ -12,9 +12,9 @@ class @Engine
         {height: height, width: width} = @world.dimensions
 
         @player    = new Player(0,0)
-        @actors    = [@player, new Actor(2, 2)]
-        @messages  = []
+        @actors    = [@player, new Actor(5,5)]
         @scheduler = new Scheduler(@actors)
+        @messages  = []
 
         Backbone.on 'move', (args...) => @move args...
         Backbone.on 'message', (message, important) =>

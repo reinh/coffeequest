@@ -1,7 +1,7 @@
 class @Actor
     constructor: (@x, @y) -> @hp = @maxHp = 10
-    name: 'the beastie'
-    char: '*'
+    name: 'the orc'
+    char: 'o'
     damage: 3
     dead: false
     at: (p) ->
