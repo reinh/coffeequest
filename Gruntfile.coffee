@@ -16,21 +16,37 @@ module.exports = (grunt) ->
       compile:
         files: [
           expand: true
-          dest: 'js/'
+          dest: '_site/js/'
           cwd: 'src/coffee'
           src: ['**/*.coffee', '**/*.litcoffee']
           ext: '.js'
         ]
 
     coffeelint:
-      source: 'src/coffee/**/*.coffee'
+      source: '_site/src/coffee/**/*.coffee'
       grunt: 'Gruntfile.coffee'
 
     stylus:
       compile:
         files:
-          'css/app.css': 'src/stylus/app.styl'
+          '_site/css/app.css': 'src/stylus/app.styl'
+
+    copy:
+      main:
+        files: [
+          { src: 'index.html', dest: '_site/index.html' }
+        ]
+
+    githubPages:
+      target:
+        options:
+          commitMessage: 'Publishing!'
+        src: '_site'
 
   # Dependencies
   for name of pkg.devDependencies when name.substring(0, 6) is 'grunt-'
     grunt.loadNpmTasks name
+
+  grunt.registerTask 'publish',
+                     'Publish the site to GitHub Pages',
+                     ['coffee', 'stylus', 'copy', 'githubPages:target']

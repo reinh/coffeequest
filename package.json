@@ -9,6 +9,9 @@
     "grunt-contrib-coffee": "latest",
     "grunt-coffeelint": "0.0.x",
     "grunt-contrib-stylus": "~0.4.1",
-    "grunt-coffee-redux": "~0.2.3"
+    "grunt-coffee-redux": "~0.2.3",
+    "grunt-contrib-copy": "~0.4.1",
+    "grunt-github-pages": "0.0.1",
+    "async": "latest"
   }
 }
