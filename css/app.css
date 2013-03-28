@@ -1,0 +1,4 @@
+svg text.actor{fill:#444;font:100 27px "Source Code Pro" monospace}
+svg rect.map.floor{fill:#eee}
+svg rect.map.wall{fill:#444}
+svg#messages text{fill:#999;font:100 16px "Source Code Pro" monospace}
